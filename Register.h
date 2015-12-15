@@ -1,5 +1,3 @@
-# RegistroElectoral
-
 struct Register {
 	char name[65];
 	char address[100];
@@ -57,5 +55,52 @@ void addRegister(Register **r, char name[65], char address[100],char number[12],
 			t->next = aux;
 		}
 		else printf("Registro Estatal ya registrado!!");
+	}
+}
+
+void addCenterRegister(Register *r, char codeR[4]) //Buscar en el principal el valor (x) indicado para asi insertar en su sub-lista un valor (y).     Optimizar
+{
+	char name[65], address[100], codeC[8];
+	if (!(vacio(r)))
+	{
+		while (r)
+		{
+			if ((strcmp(codeR, r->code) == 0)) 
+			{
+				printf("\n Ingrese sus datos: \n");
+				scanf("%s", &codeC);
+				scanf("%s", &name);
+				scanf("%s", &address);
+				addCenter(&(r)->down, name, address, codeC);
+				break;
+			}
+			r = r->next;
+		}
+	}
+}
+
+
+void seeRegister(Register *r)
+{
+		printf("Codigo: %s - ", r->code);
+		printf("Nombre: %s ", r->name);
+		printf("Numero: %s ", r->number);
+		printf("\n Direccion: %s - ", r->address);
+}	
+
+void seeAll(Register *r) //Muestra cada caja de lista principal con su debida sub-lista.       Optimizar
+{
+	int cont =1;
+	if (!vacio(r))
+	{
+		while (r)
+		{
+			printf("\n\n Caja [%i] Registro : \n\n", cont);
+			seeRegister(r);
+			printf("\n\n");
+			seePersonCenter(r->down);
+			cont++;
+			r = r->next;
+		}
 	}
 }
