@@ -77,3 +77,12 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+*.vcproj
+Debug/BuildLog.htm
+Debug/project_program.exe.embed.manifest
+project_program.vcproj.jorge-PC.jorge.user
+Debug/vc80.pdb
+Debug/project_program.exe.intermediate.manifest
+Debug/mt.dep
+*.res
+Debug/vc80.idb
