@@ -43,8 +43,9 @@ void main()
 					addCenterRegister(r, codeR);
 				break;
 
-			case 3:	printf(" Indique codigo centro electoral: ");
+			case 3:	printf(" Indique codigo centro electoral: "); 
 					scanf("%s", &codeC);
+					// Buscar en que registro estatal esta ese centro electoral, para agragar la persona
 					addPersonCenter(c, codeC);
 				/* printf(" Indique sus cedula: ");
 				scanf("%s", &ID);
