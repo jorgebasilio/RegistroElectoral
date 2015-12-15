@@ -25,3 +25,37 @@ int seed( char arch[]) {
    fclose(fichero);
    return 0;
 }
+
+void WriteDB(){
+    FILE *fp = NULL;
+	key *nuevo = NULL;
+	
+	key *aux = new key;
+	AddKey(&nuevo, "direccion");
+	AddValue(&nuevo, "UCAB");
+	
+    char result[50];
+    int i;
+
+    fp=fopen("temp.bin", "wb+");
+
+    if(fp != NULL)
+    {
+		fwrite(nuevo, sizeof(key), 1, fp);
+		AddKey(&nuevo, "nombre");
+		AddValue(&nuevo, "Jorge");
+		fwrite(nuevo, sizeof(key), 1, fp);
+        rewind(fp);
+        fread(aux, sizeof(key), 2, fp);
+    }
+
+    printf("Result\n");
+       printf("=> %s\n", aux->valor);
+	   aux = aux->next;
+	    printf("=> %s\n", aux->valor);
+
+    fclose(fp);
+}
+
+
+	
