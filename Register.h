@@ -124,4 +124,17 @@ void seeAll(Register *r)
 	}
 }
 
+void seachDeleteCenter(Register **r, char codeC[8], bool flag) // busca el la caja principal a eliminar
+{
+	Register *aux = (*r);
+	if (!(vacio(aux)))
+	{
+		while (aux)
+		{
+			printf("\n Entro while seachDeleteCenter");
+			seachChangeDelete(&(aux)->down, codeC, flag);
+			aux = aux->next;
+		}
+	}
+} // falta el caso de si es el cabeza de a lista. 
 
