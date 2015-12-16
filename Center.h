@@ -1,4 +1,4 @@
-# RegistroElectoral
+#pragma once
 
 struct Center {
 	char name[65];
@@ -59,10 +59,10 @@ void addCenter(Center **c, char name[65], char address[100], char codeC[8])
 
 void seeCenter(Center *c)
 {
-		printf("Codigo: %s - ", c->code);
-		printf("Nombre: %s ", c->name);
-		printf("\n Direccion: %s - ", c->address);
-}	
+	printf("Codigo: %s - ", c->code);
+	printf("Nombre: %s ", c->name);
+	printf("\n Direccion: %s - ", c->address);
+}
 
 void addPersonCenter(Center *c, char codeC[8])
 {
@@ -71,7 +71,7 @@ void addPersonCenter(Center *c, char codeC[8])
 	{
 		while (c)
 		{
-			if ((strcmp(codeC, c->code) == 0)) 
+			if ((strcmp(codeC, c->code) == 0))
 			{
 				printf("\n Ingrese sus datos: \n");
 				scanf("%s", &ID);
@@ -86,15 +86,22 @@ void addPersonCenter(Center *c, char codeC[8])
 	}
 }
 
-void seach(Center *c, char codeC[8]) //Busca el valor indicado (x) para mandar puntero a mostrar22 y mostrar su sub-lista.        Optimizar
+void seachCenter(Center *c, char codeC[8], bool *flag)
 {
 	if (!(vacio(c)))
 	{
 		while (c)
 		{
-			if ((strcmp(codeC, c->code) == 0)) 
+			if ((strcmp(codeC, c->code) == 0))
 			{
-				seePeople(c->left);
+				if (*flag)
+					seePeople(c->left);
+				else
+				{
+					addPersonCenter(c, codeC);
+					*flag = true;
+				}
+
 				break;
 			}
 			c = c->next;
@@ -102,9 +109,9 @@ void seach(Center *c, char codeC[8]) //Busca el valor indicado (x) para mandar p
 	}
 }
 
-void seeAll(Center *c) //Muestra cada caja de lista principal con su debida sub-lista.       Optimizar
+void seePersonCenter(Center *c)
 {
-	int cont = 1;
+	int cont = 1; bool flag = true;
 	if (!vacio(c))
 	{
 		while (c)
@@ -112,9 +119,10 @@ void seeAll(Center *c) //Muestra cada caja de lista principal con su debida sub-
 			printf("\n\n Caja [%i] principal con su sublista : \n\n", cont);
 			seeCenter(c);
 			printf("\n\n");
-			seach(c, c->code);
+			seachCenter(c, c->code, &flag);
 			c = c->next;
 			cont++;
 		}
 	}
 }
+
