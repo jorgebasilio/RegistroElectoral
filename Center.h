@@ -3,6 +3,8 @@
 struct Center {
 	char name[65];
 	char address[100];
+	char codeC[4]; // code hijo
+	char codeR[4]; // code padre
 	char code[8];
 	Center *next;
 	People *left;
@@ -13,13 +15,16 @@ bool vacio(Center *c)
 	return (!(c));
 }
 
-void addCenter(Center **c, char name[65], char address[100], char codeC[8])
+void addCenter(Center **c, char name[65], char address[100], char codeC[4], char codeR[4])
 {
 	bool flag = false;
 	if (vacio(*c))
 	{
 		Center *aux = new Center;
-		strcpy(aux->code, codeC);
+		strcpy(aux->code, codeR);
+		strcat(aux->code, codeC);
+		strcpy(aux->codeC, codeC);
+		strcpy(aux->codeR, codeR);
 		strcpy(aux->name, name);
 		strcpy(aux->address, address);
 		aux->next = (*c);
@@ -43,7 +48,10 @@ void addCenter(Center **c, char name[65], char address[100], char codeC[8])
 		if (!flag)
 		{
 			Center *aux = new Center;
-			strcpy(aux->code, codeC);
+			strcpy(aux->code, codeR);
+			strcat(aux->code, codeC);
+			strcpy(aux->codeC, codeC);
+			strcpy(aux->codeR, codeR);
 			strcpy(aux->name, name);
 			strcpy(aux->address, address);
 			aux->next = NULL;
@@ -53,7 +61,7 @@ void addCenter(Center **c, char name[65], char address[100], char codeC[8])
 				t = t->next;
 			t->next = aux;
 		}
-		else printf("Persona ya registrada!!");
+		else printf("Codigo Centro Electoral ya registrado!!");
 	}
 }
 
@@ -116,7 +124,7 @@ void seePersonCenter(Center *c)
 	{
 		while (c)
 		{
-			printf("\n\n Caja [%i] principal con su sublista : \n\n", cont);
+			printf("\n\n Caja [%i] Centro Electoral : \n\n", cont);
 			seeCenter(c);
 			printf("\n\n");
 			seachCenter(c, c->code, &flag);
@@ -125,7 +133,8 @@ void seePersonCenter(Center *c)
 		}
 	}
 }
-void change(Center **c, People **p, char codeC[8]) // parametros: lista principal completa, sub-lita a enlazar, numero X que se va a eliminar de la principal 
+
+void changeCenter(Center **c, People **p, char codeC[8]) // parametros: lista principal completa, sub-lita a enlazar, numero X que se va a eliminar de la principal 
 {
 	char codeCNew[8];
 	printf("\n Codigo Centro Electoral donde iran los electores :");
@@ -145,10 +154,20 @@ void change(Center **c, People **p, char codeC[8]) // parametros: lista principa
 	}
 }
 
-void seachChangeDelete(Center **c, char codeC[8], bool flag)
+void DeletePeople(People **p, Center **c)      //Elimina toda la sub-lista indicada.
+{
+	while (*p)
+	{
+		People *t = (*p);
+		(*c)->left = (*p)->next;
+		delete t;
+	}
+}
+
+void seachChangeDeleteCenter(Center **c, char codeC[8], bool flag)
 {
 	Center *aux = (*c);
-	while (aux)
+	while (aux->next)
 	{
 		printf("\n Entro while seachChangeDelete");
 		if ((strcmp(codeC, aux->next->code) == 0)) // se evalua para buscar el numero a eliminar
@@ -156,13 +175,83 @@ void seachChangeDelete(Center **c, char codeC[8], bool flag)
 			Center *t = aux->next;
 			aux->next = aux->next->next;
 			if (flag && !vacio(t->left)) // depende de la opcion del usuario, de lo que desea hacer
-				DeletePeople(&(t)->left); // elimina toda la sub-lista
+				DeletePeople(&(t)->left, &t); // elimina toda la sub-lista
 			else if (!flag && !vacio(t->left))
-				change(c, &(t)->left, codeC); // busca otra caja principal para poner la sub-lista de la caja a eliminar
+				changeCenter(c, &(t)->left, codeC); // busca otra caja principal para poner la sub-lista de la caja a eliminar
 			delete t;
 			break;
 		}
 		aux = aux->next;
+	}
+}
+
+void changeCodeCenter(Center ** c, char codeR[4])
+{
+	while (*c)
+	{
+		strcpy((*c)->code, codeR);
+		strcat((*c)->code, (*c)->codeC);
+		strcpy((*c)->codeR, codeR);
+		(*c) = (*c)->next;
+	}
+}
+
+void modifyCenter(Center **c)
+{
+	int op = -1; char name[65] = "", address[100] = "", codeC[8] = "";
+	while (op != 0)
+	{
+		system("cls");
+		printf("\n\n Indica lo que deseas modificar.\n\n");
+		printf("\n 1. Codigo Centro Electoral.");
+		printf("\n 2. Nombre.");
+		printf("\n 3. Direccion. ");
+		printf("\n 4. Fechar de Nacimiento.");
+		printf(" 0. Salir. \n\n");
+		printf("Indique opcion (0-4): ");
+		op = 0;
+		scanf("%i", &op);
+		system("cls");
+		printf("\n\n");
+		switch (op)
+		{
+		case 1: printf(" Indique Codigo del Centro Electoral: ");
+			scanf("%s", &codeC);
+			strcpy((*c)->code, (*c)->codeR);
+			strcat((*c)->code, codeC);
+			strcpy((*c)->codeC, codeC);
+			break;
+
+		case 2:	printf(" Indique Nombre: ");
+			scanf("%s", &name);
+			strcpy((*c)->name, name);
+			break;
+
+		case 3:	printf(" Indique Direccion: ");
+			scanf("%s", &address);
+			strcpy((*c)->address, address);
+			break;
+
+		}
+		if (op)
+		{
+			printf("\n\n");
+			system("pause");
+			system("cls");
+		}
+	}
+}
+
+void seachCenter(Center *c, char codeC[8])
+{
+	while (c)
+	{
+		if ((strcmp(codeC, c->code) == 0))
+		{
+			modifyCenter(&c);
+			break;
+		}
+		c = c->next;
 	}
 }
 
