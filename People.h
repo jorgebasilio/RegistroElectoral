@@ -68,3 +68,13 @@ void seePeople(People *p)
 		p = p->next;
 	}	
 }
+
+void DeletePeople(People **p)      //Elimina toda la sub-lista indicada.
+{
+	while (*p)
+	{
+		People *t = (*p);
+		(*p) = (*p)->next;
+		delete t;
+	}
+}
