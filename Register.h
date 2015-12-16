@@ -1,3 +1,5 @@
+#pragma once
+
 struct Register {
 	char name[65];
 	char address[100];
@@ -12,7 +14,7 @@ bool vacio(Register *r)
 	return (!(r));
 }
 
-void addRegister(Register **r, char name[65], char address[100],char number[12], char codeR[4])
+void addRegister(Register **r, char name[65], char address[100], char number[12], char codeR[4])
 {
 	bool flag = false;
 	if (vacio(*r))
@@ -58,14 +60,14 @@ void addRegister(Register **r, char name[65], char address[100],char number[12],
 	}
 }
 
-void addCenterRegister(Register *r, char codeR[4]) //Buscar en el principal el valor (x) indicado para asi insertar en su sub-lista un valor (y).     Optimizar
+void addCenterRegister(Register *r, char codeR[4])
 {
 	char name[65], address[100], codeC[8];
 	if (!(vacio(r)))
 	{
 		while (r)
 		{
-			if ((strcmp(codeR, r->code) == 0)) 
+			if ((strcmp(codeR, r->code) == 0))
 			{
 				printf("\n Ingrese sus datos: \n");
 				scanf("%s", &codeC);
@@ -79,18 +81,33 @@ void addCenterRegister(Register *r, char codeR[4]) //Buscar en el principal el v
 	}
 }
 
+void seachCenterRegister(Register *r, char codeC[8])
+{
+	bool flag = false;
+	if (!vacio(r))
+	{
+		while (r)
+		{
+			seachCenter(r->down, codeC, &flag);
+			if (!(flag))
+				r = r->next;
+			else
+				break;
+		}
+	}
+}
 
 void seeRegister(Register *r)
 {
-		printf("Codigo: %s - ", r->code);
-		printf("Nombre: %s ", r->name);
-		printf("Numero: %s ", r->number);
-		printf("\n Direccion: %s - ", r->address);
-}	
+	printf("Codigo: %s - ", r->code);
+	printf("Nombre: %s ", r->name);
+	printf("Numero: %s ", r->number);
+	printf("\n Direccion: %s - ", r->address);
+}
 
-void seeAll(Register *r) //Muestra cada caja de lista principal con su debida sub-lista.       Optimizar
+void seeAll(Register *r)
 {
-	int cont =1;
+	int cont = 1;
 	if (!vacio(r))
 	{
 		while (r)
@@ -101,6 +118,10 @@ void seeAll(Register *r) //Muestra cada caja de lista principal con su debida su
 			seePersonCenter(r->down);
 			cont++;
 			r = r->next;
+			system("pause");
+			system("cls");
 		}
 	}
 }
+
+
