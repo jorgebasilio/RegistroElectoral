@@ -86,3 +86,8 @@ Debug/project_program.exe.intermediate.manifest
 Debug/mt.dep
 *.res
 Debug/vc80.idb
+Release/project_program.exe.intermediate.manifest
+*.pdb
+Release/vc80.idb
+*.dep
+Release/BuildLog.htm

@@ -31,8 +31,5 @@ void main(){
 
 	AddValue(&caja, hola);
 	ViewValue(caja);
-
-	int x = 0;
-	scanf("%i", &x);
 }
 
