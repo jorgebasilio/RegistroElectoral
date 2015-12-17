@@ -258,6 +258,14 @@ int countStatesCenterPerson(Center *c, bool flag)
 	else return sumCenter;
 }
 
+void countCenterPerson(Center *c)
+{
+	printf("\n Centro Electoral: %s codigo %s", c->name, c->code);
+	int x = countPerson(c->left);
+	printf("\n Tiene %i votantes ", x);
+
+}
+
 int seachNameCenter(Center *c, char name[65])
 {
 	int re = 0;
@@ -276,7 +284,7 @@ int seachNameCenter(Center *c, char name[65])
 	return re;
 }
 
-int changeSonFather(Center **c, char ID[10], char newFather[8])
+int changeSonFather(Center **c, char ID[10], char newFather[8]) //modificar
 {
 	Center *aux = (*c); bool flag = false; int x = 0;
 	while (aux)
@@ -310,7 +318,7 @@ int changeSonFather(Center **c, char ID[10], char newFather[8])
 						x = 1;
 						break;
 					}
-					aux = aux->next;
+					aux = aux->next; //error en esta linea, o una cercana.
 				}
 				flag = true;
 				break;
@@ -321,4 +329,5 @@ int changeSonFather(Center **c, char ID[10], char newFather[8])
 		aux = aux->next;
 	}
 	return x;
-}
+} //modificar
+
