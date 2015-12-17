@@ -150,9 +150,6 @@ void seachDeleteCenter(Register **r, char code[8], bool flag) // busca el la caj
 	}
 } // falta el caso de si es el cabeza de a lista. 
 
-void deleteCenterPeople(Center **c) 
-{}
-
 void changeRegister(Register **r, Center **c, char codeR[4]) // parametros: lista principal completa, sub-lita a enlazar, numero X que se va a eliminar de la principal 
 {
 	char codeRNew[4];
@@ -290,10 +287,28 @@ void seachR(Register *r, char codeR[4])
 			int x = countStatesCenterPerson(r->down, flag);
 			printf("\n Hay %i Centro electorales.", x);
 			break;
+			r = r->next;
+		}
+	}
+}
+
+void seachRC(Register *r, char code[8])
+{
+	while (r)
+	{
+		Center *aux = r->down;
+		while (aux)
+		{
+			if ((strcmp(code, aux->code) == 0))
+			{
+				countCenterPerson(aux);
+				break;
+			}
+			aux = aux->next;
 		}
 		r = r->next;
 	}
-}
+} // reporte centro electoral
 
 void seachID(Register *r, char ID[10])
 {
