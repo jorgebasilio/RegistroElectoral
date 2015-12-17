@@ -24,7 +24,7 @@ void main()
 		printf("\n 7. Elimina Registro Estatal (Cambia votantes y Centros Electorales)."); //Por probar
 		printf("\n 8. Modificar Registro Estatal."); //Por probar
 		printf("\n 9. Modificar Centro Electoral. "); //Por probar
-		printf("\n 10. Modificar Persona.");
+		printf("\n 10. Modificar Persona."); //por probar 
 		printf("\n 11. Reporte General."); //funciona
 		printf("\n 12. Reporte por Registro Estata."); //funciona
 		printf("\n 13. Buscar persona por cedula. "); //funciona
