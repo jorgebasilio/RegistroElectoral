@@ -70,9 +70,9 @@ void addCenterRegister(Register *r, char codeR[4])
 			if ((strcmp(codeR, r->code) == 0))
 			{
 				printf("\n Ingrese sus datos: \n");
-				scanf("%s", &codeC);
-				scanf("%s", &name);
-				scanf("%s", &address);
+				scanf("%s", codeC);
+				scanf("%s", name);
+				scanf("%s", address);
 				addCenter(&(r)->down, name, address, codeC, codeR);
 				break;
 			}
@@ -194,25 +194,25 @@ void modifyRegister(Register **r)
 		switch (op)
 		{
 		case 1: printf(" Indique Codigo Estatal: ");
-			scanf("%s", &codeR);
-			printf(" %s: " ,(*r)->code);
+			scanf("%s", codeR);
+			//printf(" %s: " ,(*r)->code);
 			strcpy((*r)->code, codeR);
-			printf(" %s: ", (*r)->code);
+			//printf(" %s: ", (*r)->code);
 			changeCodeCenter(&(*r)->down, codeR);
 			break;
 
 		case 2:	printf(" Indique Nombre: ");
-			scanf("%s", &name);
+			scanf("%s", name);
 			strcpy((*r)->name, name);
 			break;
 
 		case 3:	printf(" Indique Direccion: ");
-			scanf("%s", &address);
+			scanf("%s", address);
 			strcpy((*r)->address, address);
 			break;
 
 		case 4:printf(" Indique Numero Telefonico: ");
-			scanf("%s", &number);
+			scanf("%s", number);
 			strcpy((*r)->number, number);
 			break;
 		}
@@ -262,4 +262,117 @@ void seachChangeDeleteRegister(Register **r, char codeR[4], bool flag)
 			}
 		}
 	}
-} // falta el caso de si es el cabeza de a lista. 
+}
+
+int countStates(Register *r)
+{
+	int sumStates = 0, sumAllPeople = 0; bool flag = true;
+	while (r)
+	{
+		printf("\n Region Estatal: %s codigo %s", r->name, r->code);
+		int x = countStatesCenterPerson(r->down, flag);
+		printf("\n En total tiene %i votantes ", x);
+		sumAllPeople += x;
+		sumStates++;
+		r = r->next;
+	}
+	return sumStates;
+}
+
+void seachR(Register *r, char codeR[4])
+{
+	while (r)
+	{
+		if ((strcmp(codeR, r->code) == 0))
+		{
+			printf("\n En la Region Estatal %s codigo %s", r->name, r->code);
+			bool flag = false;
+			int x = countStatesCenterPerson(r->down, flag);
+			printf("\n Hay %i Centro electorales.", x);
+			break;
+		}
+		r = r->next;
+	}
+}
+
+void seachID(Register *r, char ID[10])
+{
+	while (r)
+	{
+		Center *aux = r->down; bool flag = false;
+		while (aux)
+		{
+			if (seachPerson(aux->left, ID, flag) == 1)
+			{
+				seeCenter(aux);
+				printPerson(aux->left);
+			}
+		}
+		r = r->next;
+	}
+}
+
+void seachNameRegister(Register *r, char name[65])
+{
+	int re = 0;
+	while (r)
+	{
+		int x = seachNameCenter(r->down, name);
+		if (x != 0)
+		{
+			printf(" \n En :");
+			seeRegister(r);
+			printf(" Hay [%i] Centro(s) Electorale(s) que coinciden con : %s", x, name);
+			re++;
+		}
+		r = r->next;
+		printf("\n\n");
+		system("pause");
+		system("cls");
+	}
+	printf(" Hay [%i] Registro(s) Regionale(s) que coinciden con : %s", re, name);
+}
+
+void seachIDModify(Register *r, char ID[10])
+{
+	int x = 0;
+	while (r)
+	{
+		Center *aux = r->down; bool flag = true;
+		while (aux)
+		{
+			x = seachPerson(aux->left, ID, flag);
+			if (x == 1)
+				break;
+			aux = aux->next;
+		}
+		r = r->next;
+	}
+}
+
+void seachCenterModify(Register *r, char codeC[8])
+{
+	while (r)
+	{
+		Center *aux = r->down;
+		while (aux)
+		{
+			if ((strcmp(codeC, aux->code) == 0))
+			{
+				modifyCenter(&aux);
+				break;
+			}
+			aux = aux->next;
+		}
+	}
+}
+
+void seachSonFather(Register *r, char ID[10], char newFather[8])
+{
+	while (r) 
+	{
+		if (changeSonFather(&(r)->down, ID, newFather) == 1)
+			break;
+		r = r->next;
+	}
+}
