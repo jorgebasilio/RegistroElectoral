@@ -67,8 +67,8 @@ void addCenter(Center **c, char name[65], char address[100], char codeC[4], char
 
 void seeCenter(Center *c)
 {
-	printf("Codigo: %s - ", c->code);
-	printf("Nombre: %s ", c->name);
+	printf(" Codigo: %s - ", c->code);
+	printf(" Nombre: %s ", c->name);
 	printf("\n Direccion: %s - ", c->address);
 }
 
@@ -82,10 +82,10 @@ void addPersonCenter(Center *c, char codeC[8])
 			if ((strcmp(codeC, c->code) == 0))
 			{
 				printf("\n Ingrese sus datos: \n");
-				scanf("%s", &ID);
-				scanf("%s", &name);
-				scanf("%s", &address);
-				scanf("%s", &date);
+				scanf("%s", ID);
+				scanf("%s", name);
+				scanf("%s", address);
+				scanf("%s", date);
 				addPerson(&(c)->left, ID, name, address, date);
 				break;
 			}
@@ -216,19 +216,19 @@ void modifyCenter(Center **c)
 		switch (op)
 		{
 		case 1: printf(" Indique Codigo del Centro Electoral: ");
-			scanf("%s", &codeC);
+			scanf("%s", codeC);
 			strcpy((*c)->code, (*c)->codeR);
 			strcat((*c)->code, codeC);
 			strcpy((*c)->codeC, codeC);
 			break;
 
 		case 2:	printf(" Indique Nombre: ");
-			scanf("%s", &name);
+			scanf("%s", name);
 			strcpy((*c)->name, name);
 			break;
 
 		case 3:	printf(" Indique Direccion: ");
-			scanf("%s", &address);
+			scanf("%s", address);
 			strcpy((*c)->address, address);
 			break;
 
@@ -242,16 +242,83 @@ void modifyCenter(Center **c)
 	}
 }
 
-void seachCenter(Center *c, char codeC[8])
+int countStatesCenterPerson(Center *c, bool flag)
 {
+	int sumPeople = 0, sumCenter = 0;
 	while (c)
 	{
-		if ((strcmp(codeC, c->code) == 0))
+		if (!flag) printf("\n Centro Electoral: %s codigo %s", c->name, c->code);
+		int x = countPerson(c->left);
+		if (!flag) printf("\n Tiene %i votantes ", x);
+		sumPeople += x;
+		sumCenter++;
+		c = c->next;
+	}
+	if (flag) return sumPeople;
+	else return sumCenter;
+}
+
+int seachNameCenter(Center *c, char name[65])
+{
+	int re = 0;
+	while (c)
+	{
+		int x = seachName(c->left, name);
+		if (x != 0)
 		{
-			modifyCenter(&c);
-			break;
+			printf(" \n En :");
+			seeCenter(c);
+			printf(" Hay [%i] personas que coinciden con: %s", x, name);
+			re++;
 		}
 		c = c->next;
 	}
+	return re;
 }
 
+int changeSonFather(Center **c, char ID[10], char newFather[8])
+{
+	Center *aux = (*c); bool flag = false; int x = 0;
+	while (aux)
+	{
+		People *t = aux->left, *ref = NULL;
+		char father[8];
+		strcpy(aux->code, father);
+		while (t)
+		{
+			if ((strcmp(ID, t->ID) == 0) || (strcmp(ID, t->next->ID) == 0))
+			{
+				if ((strcmp(ID, t->next->ID) == 0))
+				{
+					People *ref = t->next;
+					t->next = t->next->next;
+				}
+				else
+				{
+					aux->left = t->next;
+					People *ref = t;
+				}
+				Center *aux2 = (*c);
+				while (aux2)
+				{
+					if ((strcmp(newFather, aux2->code) == 0))
+					{
+						People *t = aux->left;
+						while (t->next)
+							t = t->next;
+						t->next = ref;
+						x = 1;
+						break;
+					}
+					aux = aux->next;
+				}
+				flag = true;
+				break;
+			}
+			t = t->next;
+		}
+		if (flag) break;
+		aux = aux->next;
+	}
+	return x;
+}
