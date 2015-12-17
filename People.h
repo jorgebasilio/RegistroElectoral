@@ -164,3 +164,29 @@ int seachName(People *p, char name[65])
 	}
 	return x;
 }
+
+/* void returnDDMMAA(char DD[3], char MM[3], char AA[5], char carry[10])
+{
+	char *_p = carry;
+
+	strncpy(DD, _p, 2);
+	_p = &carry[2];
+	strncpy(MM, _p, 2);
+	_p = &carry[4];
+	strncpy(AA, _p, 4);
+}
+
+
+void returnCarry(char date[10], char carry[10])
+{
+	char DD[3], MM[3], AA[5], DDP[3], MMP[3], AAP[5];
+	returnDDMMAA(DD, MM, AA, carry);
+	returnDDMMAA(DDP, MMP, AAP, date);
+	if (strcmp(AA, AAP) > 0)
+		strcpy(carry, date);
+	else if ((strcmp(AA, AA) == 0) && (strcmp(MM, MMP) > 0))
+		strcpy(carry, date);
+	else if ((strcmp(AA, AA) == 0) && (strcmp(MM, MMP) == 0) && ((strcmp(DD, DDP) > 0) || (strcmp(DD, DDP) == 0)))
+		strcpy(carry, date);
+}
+*/
