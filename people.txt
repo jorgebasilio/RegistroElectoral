@@ -1,0 +1,6 @@
+"nombre": "Any Name", "cedula": "00000000", "direccion": "My house! :D", "fecha": "31121999";
+"nombre": "Ruben Luna", "cedula": "25217437", "direccion": "El llanito", "fecha": "16081996";
+"nombre": "Jorge Basilio", "cedula": "26334221", "direccion": "My house! :D", "fecha": "14111994";
+"nombre": "Liliana de freitas", "cedula": "10000000", "direccion": "My house! :D", "fecha": "31121999";
+"nombre": "Karen Basilio", "cedula": "20000000", "direccion": "My house! :D", "fecha": "31121999";
+"nombre": "Alejandro Basilio", "cedula": "30000000", "direccion": "My house! :D", "fecha": "31121999";

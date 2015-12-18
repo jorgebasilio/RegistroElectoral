@@ -1,0 +1,2 @@
+"nombre": "Centro de petare",  "direccion": "Petare", "codigo": "001001", "references": "[00000000,25217437,26334221,]";
+"nombre": "Centro de palo verde",  "direccion": "Petare", "codigo": "001002", "references": "[10000000,20000000,30000000,]";

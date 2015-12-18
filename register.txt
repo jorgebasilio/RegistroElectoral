@@ -1,0 +1,1 @@
+"nombre": "Registro de caracas",  "direccion": "Caracas", "codigo": "001", "telefono": "02122555555", "references": "[001001,001002,]";

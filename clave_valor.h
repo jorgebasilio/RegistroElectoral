@@ -1,6 +1,7 @@
 struct key{
 	char clave[50];
 	char valor[100];
+  index *ind;
 	key *next;
 };
 void AddKey(key **data, char *value){
@@ -54,4 +55,45 @@ char *ReturnValue( char *data, char *clave ){
 	}
 	valor[e] = '\0';
 	return valor;
+}
+
+
+/*
+bool references_present( char *data ){
+  if(strstr(data, "\"references\"") != NULL)
+    return true;
+  return false;
+}
+char *references_type( char *data ){
+  return ReturnValue( data, "references" );
+}*/
+index *references( char *data ){
+  index *aux = NULL;
+  int data_long = strlen(data);
+  char *value = new char;
+  bool flag = false;
+  int e= 0, a = 0;
+  for (int i = 0; i < data_long; i++)
+  {
+    if((data[i] == '\"') && (data[(i+1)] == '\[')){
+      flag = true;
+      e = i+2;
+    }
+    while((data[e+1] != '\"') && (data[e] != ']') && (flag) && (e < data_long))
+    {
+      if((data[e] != ',') && (data[e] != ']'))
+      {
+        value[a] = data[e];
+        a++;
+      }
+      else
+      {
+        value[a] = '\0';
+        a = 0;
+        AddIndex( &aux, value );
+      }
+      e++;
+    }
+  }
+  return aux;
 }
