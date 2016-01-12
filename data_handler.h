@@ -28,8 +28,11 @@ People *findPeople( char *id ){
     }
     return person;
   }
-  else
+  else{
+    rewind(data_people);
+    fclose(data_people);
     return person;
+  }
 }
 bool peopleIsPresent( char *id ){
   People *person = new People;
@@ -44,8 +47,11 @@ bool peopleIsPresent( char *id ){
     }
     return false;
   }
-  else
+  else{
+    rewind(data_people);
+    fclose(data_people);
     return false;
+  }
 }
 void createPeopleDB(){
   FILE *fp = NULL;
@@ -62,9 +68,9 @@ void SavePeopleDB( key *data ){
     FILE *data_people = fopen("people.dat", "a+b");
     if((data_people != NULL) && (!peopleIsPresent( person->ID ))){
       fwrite(person, sizeof(People), 1, data_people);
-      rewind(data_people);
-      fclose(data_people);
     }
+    rewind(data_people);
+    fclose(data_people);
   }
 }
 void ViewPeopleDB(){
@@ -131,6 +137,8 @@ Center *findCenter( char *code ){
         return ctr;        
       }
     }
+    rewind(data_center);
+    fclose(data_center);
     return NULL;
   }
   else
@@ -147,6 +155,8 @@ bool centerIsPresent( char *code ){
         return true;        
       } 
     }
+    rewind(data_center);
+    fclose(data_center);
     return false;
   }
   else
@@ -170,8 +180,9 @@ void SaveCenterDB( key *data ){
   {
     createCenterDB();
     FILE *data_center = fopen("center.dat", "a+b");
-    if((data_center != NULL) && (!centerIsPresent(polling_station->code))){
-      fwrite(polling_station, sizeof(Center), 1, data_center);
+    if(data_center != NULL){ 
+      if(!centerIsPresent(polling_station->code))
+        fwrite(polling_station, sizeof(Center), 1, data_center);
       rewind(data_center);
       fclose(data_center);
     }
@@ -208,6 +219,8 @@ Center *findCenterRegister( char *id ){
         indexrCenter(&aux, &tmp);
       }
     }
+    rewind(index_register);
+    fclose(index_register);
     return aux;
   }
   else
@@ -240,6 +253,8 @@ Register *findRegister( char *code ){
         return ctr;        
       }
     }
+    rewind(data_register);
+    fclose(data_register);
     return NULL;
   }
   else
@@ -257,6 +272,8 @@ bool registerIsPresent( char *code ){
         return true;        
       }
     }
+    rewind(data_register);
+    fclose(data_register);
     return false;
   }
   else
@@ -270,9 +287,9 @@ void createRegisterDB(){
   if((fp1 == NULL) && (fp1 == NULL)){
     fp1=fopen("register.dat", "wb");
     fp2=fopen("register.index", "wb");
-    fclose(fp1);
-    fclose(fp2);
   }
+  fclose(fp1);
+  fclose(fp2);
 }
 void SaveRegisterDB( key *data ){
   Register *electoral_registers = KeyToRegister(data);
@@ -280,8 +297,9 @@ void SaveRegisterDB( key *data ){
   {
     createRegisterDB();
     FILE *data_register = fopen("register.dat", "a+b");
-    if((data_register != NULL) && (!registerIsPresent(electoral_registers->code))){
-      fwrite(electoral_registers, sizeof(Register), 1, data_register);
+    if(data_register != NULL){
+      if (!registerIsPresent(electoral_registers->code))
+        fwrite(electoral_registers, sizeof(Register), 1, data_register);
       rewind(data_register);
       fclose(data_register);
     }
@@ -325,6 +343,31 @@ void seed( key **data, char root_file[], void (* function_struct)(key*) ) {
     delete(aux);
     (* function_struct)(*data);
   }
-   rewind(fichero);
-   fclose(fichero);
+  rewind(fichero);
+  fclose(fichero);
 }
+void savePeopleMemoryDB( People **data ){
+  //Guarda todos los cambios realizados con people en BD
+  FILE *datapeople = fopen("people.dat", "w");
+  fclose(datapeople);
+  while((*data) != NULL)
+  {
+    FILE *data_people = fopen("people.dat", "a+b");
+    if((data_people != NULL) && (!peopleIsPresent( (*data)->ID ))){
+      fwrite(*data, sizeof(People), 1, data_people);
+    }
+    rewind(data_people);
+    fclose(data_people);
+    *data = (*data)->next;
+  }
+}
+/*
+void saveCenterMemoryDB(){
+  
+}
+void saveRegisterMemoryDB(){
+
+}
+void saveChange(){
+
+}*/
