@@ -64,7 +64,7 @@ void ViewCenter( Center *data ){
     printf("%-10s \| %-25s \|\n", data->code, data->name);
     viewPersons(data->left);
     printf("%s\n", data->left->ID);
-    ViewCenterDB(data->next);
+    ViewCenter(data->next);
     printf("%i\n", data->next);
   }
 }
@@ -89,29 +89,33 @@ void main(){
 
   int op = -1; 
   char ID[10] = "", name[65] = "", address[100] = "", date[9] = "", codeC[4] = "", codeR[4] = "", number[12] = "", code[8] = "";
-  while (op != 0) {
+  while (op != 0 && op != 17) {
     system("cls");
     printf("\n\n                                Menu principal. \n\n\n");
-    printf("\n 1. Insertar Registro Estatal."); //funciona
-    printf("\n 2. Insertar Centro Electoral en Registrol Estatal."); //funciona
-    printf("\n 3. Ingresar Persona en Centro Electoral. "); //funciona
-    printf("\n 4. Mostrar todo."); //funciona
-    printf("\n 5. Elimina Centro Electoral (Elimina votantes)."); //funciona.
-    printf("\n 6. Elimina Centro Electoral (Cambia votantes de Centro Electoral). "); //funciona
-    printf("\n 7. Elimina Registro Estatal (Cambia votantes y Centros Electorales)."); //Por probar
-    printf("\n 8. Modificar Registro Estatal."); //Por probar
-    printf("\n 9. Modificar Centro Electoral. "); //Por probar
-    printf("\n 10. Modificar Persona."); //por probar
-    printf("\n 11. Reporte General."); //funciona
-    printf("\n 12. Reporte por Registro Estata."); //funciona
-    printf("\n 13. Buscar persona por cedula. "); //funciona
-    printf("\n 14. Prueba comparar sinonimos."); //funciona, pero no se ha provado completamente.
-    printf("\n 15. Cambiar de Centro Electoral a una persona(Mismo Registro Estatal)."); // Por probar
-    printf("\n 16. .");
-    printf(" 0. Salir. \n\n");
-    printf("Indique opcion (1-5): ");
+	printf("\n 1. Insertar Registro Estatal."); //funciona
+	printf("\n 2. Insertar Centro Electoral en Registrol Estatal."); //funciona
+	printf("\n 3. Ingresar Persona en Centro Electoral. "); //funciona
+	printf("\n 4. Mostrar todo."); //funciona
+	printf("\n 5. Elimina Centro Electoral (Elimina votantes)."); //funciona.
+	printf("\n 6. Elimina Centro Electoral (Cambia votantes de Centro Electoral). "); //funciona
+	printf("\n 7. Elimina Registro Estatal (Cambia votantes y Centros Electorales)."); //No funciona, se ha cambiado parte del codigo para la agrupacion de los codigos.
+	printf("\n 8. Modificar Registro Estatal."); //No furula, elimina el registro estatal.
+	printf("\n 9. Modificar Centro Electoral. "); //Funciona
+	printf("\n 10. Modificar Persona."); //Funciona
+	printf("\n 11. Reporte General."); //funciona
+	printf("\n 12. Reporte por Registro Estata."); //funciona
+	printf("\n 13. Buscar persona por cedula. "); //funciona
+	printf("\n 14. Prueba comparar sinonimos."); //funciona, pero muestra ciertas incongruencias.
+	printf("\n 15. Cambiar de Centro Electoral a una persona(Mismo Registro Estatal)."); // Por probar
+	printf("\n 16. .");
+	printf(" \n\\n\0. Guardar y Salir. \n\n");
+	printf(" \n\\n\17. Salir. \n\n");
+	printf("Indique opcion (1-5): ");
     op = 0;
     scanf("%i", &op);
+	if(op == 0){
+		saveChange(r);
+	}
     system("cls");
     printf("\n\n");
     bool flag = true;
