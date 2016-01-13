@@ -1,229 +1,215 @@
-#pragma once
-
-struct Center {
-  char name[65];
-  char address[100];
-  char codeC[4]; // code hijo
-  char codeR[4]; // code padre
-  char code[8];
-  Center *next;
-  People *left;
-};
-bool vacio(Center *c)
-{
-	return (!(c));
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "index.h"
+#include "clave_valor.h"
+#include "people.h"
+#include "center.h"
+#include "register.h"
+#include "data_handler.h"
+//Estructura del key :
+//
+//   "clave": "valor";
+//
+//Para mas de uno (separar con comas ','):
+//
+//   "clave": "valor", "clave2": "valor2";
+//
+// LOS DATOS CARGADOS SON DE PRUEBA
+// 
+void loadFilePeople(){
+  void (*people)(key*);
+  people = SavePeopleDB;
+  key *clave_people = NULL;
+  AddKey(&clave_people, "nombre");
+  AddKey(&clave_people, "cedula");
+  AddKey(&clave_people, "direccion");
+  AddKey(&clave_people, "fecha");
+  seed(&clave_people, "people.txt", people);
 }
 
-void addCenter(Center **c, char name[65], char address[100], char codeC[4])
-{
-  bool flag = false;
-  if (vacio(*c))
+void loadFileCenter(){
+  void (*center)(key*);
+  center = SaveCenterDB;
+  key *clave_center = NULL;
+  AddKey(&clave_center, "nombre");
+  AddKey(&clave_center, "direccion");
+  AddKey(&clave_center, "codigo");
+  AddKey(&clave_center, "references");
+  seed(&clave_center, "center.txt", center);
+}
+
+void loadFileRegister(){
+  void (*registrs)(key*);
+  registrs = SaveRegisterDB;
+  key *clave_register = NULL;
+  AddKey(&clave_register, "nombre");
+  AddKey(&clave_register, "direccion");
+  AddKey(&clave_register, "codigo");
+  AddKey(&clave_register, "telefono");
+  AddKey(&clave_register, "references");
+  seed(&clave_register, "register.txt", registrs);
+}
+void viewPersons(People *data){
+  printf("\n%-10s \| %-25s \|\n", "id", "name");
+  while (data != NULL)
   {
-    Center *aux = new Center;
-    strcpy(aux->code, codeC);
-    strcpy(aux->name, name);
-    strcpy(aux->address, address);
-    aux->next = (*c);
-    aux->left = NULL;
-    (*c) = aux;
-    flag = true;
-  }
-  else
-  {
-    Center *t = (*c);
-    while (t)
-    {
-      if ((strcmp(codeC, t->code) == 0))
-      {
-        flag = true;
-        break;
-      }
-      t = t->next;
-    }
-
-    if (!flag)
-    {
-      Center *aux = new Center;
-      strcpy(aux->code, codeC);
-      strcpy(aux->name, name);
-      strcpy(aux->address, address);
-      aux->next = NULL;
-      aux->left = NULL;
-      t = (*c);
-      while (t->next)
-        t = t->next;
-      t->next = aux;
-    }
-    else printf("Codigo Centro Electoral ya registrado!!");
-  }
-}
-
-void seeCenter(Center *c)
-{
-	printf("Codigo: %s - ", c->code);
-	printf("Nombre: %s ", c->name);
-	printf("\n Direccion: %s - ", c->address);
-}
-
-void addPersonCenter(Center *c, char codeC[8])
-{
-	char ID[10], name[65], address[100], date[9];
-	if (!(vacio(c)))
-	{
-		while (c)
-		{
-			if ((strcmp(codeC, c->code) == 0))
-			{
-				printf("\n Ingrese sus datos: \n");
-				scanf("%s", &ID);
-				scanf("%s", &name);
-				scanf("%s", &address);
-				scanf("%s", &date);
-				addPerson(&(c)->left, ID, name, address, date);
-				break;
-			}
-			c = c->next;
-		}
-	}
-}
-
-void seachCenter(Center *c, char codeC[8], bool *flag)
-{
-	if (!(vacio(c)))
-	{
-		while (c)
-		{
-			if ((strcmp(codeC, c->code) == 0))
-			{
-				if (*flag)
-					seePeople(c->left);
-				else
-				{
-					addPersonCenter(c, codeC);
-					*flag = true;
-				}
-
-				break;
-			}
-			c = c->next;
-		}
-	}
-}
-
-void seePersonCenter(Center *c)
-{
-	int cont = 1; bool flag = true;
-	if (!vacio(c))
-	{
-		while (c)
-		{
-			printf("\n\n Caja [%i] principal con su sublista : \n\n", cont);
-			seeCenter(c);
-			printf("\n\n");
-			seachCenter(c, c->code, &flag);
-			c = c->next;
-			cont++;
-		}
-	}
-}
-
-
-void changeCenter(Center **c, People **p, char codeC[8]) // parametros: lista principal completa, sub-lita a enlazar, numero X que se va a eliminar de la principal 
-{
-  char codeCNew[8];
-  printf("\n Codigo Centro Electoral donde iran los electores :");
-  scanf("%s", &codeCNew);
-  Center *aux = (*c);
-  while (aux)
-  {
-    if ((strcmp(codeCNew, aux->code) == 0) && (strcmp(codeCNew, codeC) != 0)) // se busca la caja principal a enlazar con sublista de X, mientras sea distinto de X
-    {
-      People *t = aux->left; // se asigna un auxiliar hacia la sublista que ya tiene la caja principal que se le desea enlazar la otra sublista
-      while (t->next) // busca el final de la sublista de la caja principal
-        t = t->next;
-      t->next = (*p); //enlaza la ultima caja de la sublista, con el puntero de la sublita de la caja a eliminar
-      break;
-    }
-    aux = aux->next;
+    printf("%-10s \| %-25s \|\n", data->ID, data->name);
+    data = data->next;
   }
 }
-
-void DeletePeople(People **p, Center **c)      //Elimina toda la sub-lista indicada.
-{
-  while (*p)
-  {
-    People *t = (*p);
-    (*c)->left = (*p)->next;
-    delete t;
+void ViewCenter( Center *data ){
+  if(data != NULL){
+    printf("\n%-10s \| %-25s \|\n", "code", "name");
+    printf("%-10s \| %-25s \|\n", data->code, data->name);
+    viewPersons(data->left);
+    printf("%s\n", data->left->ID);
+    ViewCenter(data->next);
+    printf("%i\n", data->next);
   }
 }
+void main(){
+  loadFilePeople();
+  printf("\n People is load\n");
 
-void seachChangeDeleteCenter(Center **c, char codeC[8], bool flag)
-{
-  Center *aux = (*c);
-  while (aux->next)
-  {
-    printf("\n Entro while seachChangeDelete");
-    if ((strcmp(codeC, aux->next->code) == 0)) // se evalua para buscar el numero a eliminar
-    {
-      Center *t = aux->next;
-      aux->next = aux->next->next;
-      if (flag && !vacio(t->left)) // depende de la opcion del usuario, de lo que desea hacer
-        DeletePeople(&(t)->left, &t); // elimina toda la sub-lista
-      else if (!flag && !vacio(t->left))
-        changeCenter(c, &(t)->left, codeC); // busca otra caja principal para poner la sub-lista de la caja a eliminar
-      delete t;
-      break;
-    }
-    aux = aux->next;
-  }
-}
+  loadFileCenter();
+  printf("\n Center's is load\n");
 
-void changeCodeCenter(Center ** c, char codeR[4])
-{
-  while (*c)
-  {
-    strcpy((*c)->code, codeR);
-    strcat((*c)->code, (*c)->codeC);
-    strcpy((*c)->codeR, codeR);
-    (*c) = (*c)->next;
-  }
-}
+  loadFileRegister();
+  printf("\n Register's is load\n");
+  
+  People *p = RecorverPeopleDB();
+  Center *c = RecorverCenterDB();
+  Register *r = RecorverRegisterDB();
 
-void modifyCenter(Center **c)
-{
-  int op = -1; char name[65] = "", address[100] = "", codeC[8] = "";
-  while (op != 0)
-  {
+  system("PAUSE");
+
+  //saveChange(r); --------------------Funcion para salvar los datos
+
+
+  int op = -1; 
+  char ID[10] = "", name[65] = "", address[100] = "", date[9] = "", codeC[4] = "", codeR[4] = "", number[12] = "", code[8] = "";
+  while (op != 0 && op != 17) {
     system("cls");
-    printf("\n\n Indica lo que deseas modificar.\n\n");
-    printf("\n 1. Codigo Centro Electoral.");
-    printf("\n 2. Nombre.");
-    printf("\n 3. Direccion. ");
-    printf("\n 4. Fechar de Nacimiento.");
-    printf(" 0. Salir. \n\n");
-    printf("Indique opcion (0-4): ");
+    printf("\n\n                                Menu principal. \n\n\n");
+	printf("\n 1. Insertar Registro Estatal."); //funciona
+	printf("\n 2. Insertar Centro Electoral en Registrol Estatal."); //funciona
+	printf("\n 3. Ingresar Persona en Centro Electoral. "); //funciona
+	printf("\n 4. Mostrar todo."); //funciona
+	printf("\n 5. Elimina Centro Electoral (Elimina votantes)."); //funciona.
+	printf("\n 6. Elimina Centro Electoral (Cambia votantes de Centro Electoral). "); //funciona
+	printf("\n 7. Elimina Registro Estatal (Cambia votantes y Centros Electorales)."); //No funciona, se ha cambiado parte del codigo para la agrupacion de los codigos.
+	printf("\n 8. Modificar Registro Estatal."); //No furula, elimina el registro estatal.
+	printf("\n 9. Modificar Centro Electoral. "); //Funciona
+	printf("\n 10. Modificar Persona."); //Funciona
+	printf("\n 11. Reporte General."); //funciona
+	printf("\n 12. Reporte por Registro Estata."); //funciona
+	printf("\n 13. Buscar persona por cedula. "); //funciona
+	printf("\n 14. Prueba comparar sinonimos."); //funciona, pero muestra ciertas incongruencias.
+	printf("\n 15. Cambiar de Centro Electoral a una persona(Mismo Registro Estatal)."); // Por probar
+	printf("\n 16. .");
+	printf(" \n\\n\0. Guardar y Salir. \n\n");
+	printf(" \n\\n\17. Salir. \n\n");
+	printf("Indique opcion (1-5): ");
     op = 0;
     scanf("%i", &op);
+	if(op == 0){
+		saveChange(r);
+	}
     system("cls");
     printf("\n\n");
+    bool flag = true;
     switch (op)
     {
-    case 1: printf(" Indique Codigo del Centro Electoral: ");
-      scanf("%s", codeC);
-      strcpy((*c)->code, (*c)->codeR);
-      strcat((*c)->code, codeC);
-      strcpy((*c)->codeC, codeC);
-      break;
-
-    case 2: printf(" Indique Nombre: ");
+    case 1: printf(" Indique datos: \n");
+      printf(" Introduce codigo: \n");
+      scanf("%s", codeR);
+      printf(" Indique nombre: \n");
       scanf("%s", name);
-      strcpy((*c)->name, name);
+      printf(" Indique numero: \n");
+      scanf("%s", number);
+      printf(" Indique direccion: \n");
+      scanf("%s", address);
+      addRegister(&r, name, address, number, codeR);
       break;
 
-    case 3: printf(" Indique Direccion: ");
-      scanf("%s", address);
-      strcpy((*c)->address, address);
+    case 2: printf(" Indique codigo Registro Estatal: ");
+      scanf("%s", codeR);
+      addCenterRegister(r, codeR);
+      break;
+
+    case 3: printf(" Indique codigo centro electoral: ");
+      scanf("%s", codeC);
+      seachCenterRegister(r, codeC);
+      break;
+
+    case 4:
+      printf(" Centros electorales con personas: \n");
+      seeAll(r);
+      break;
+
+    case 5: printf(" Codigo Centro electoral para eliminar de una Region Estatal \n (Elimina todos su votantes, sin guardar.):");
+      scanf("%s", codeC);
+      seachDeleteCenter(&r, codeC, flag);
+      break;
+
+    case 6:
+      printf(" Codigo Centro electoral para eliminar de una Region Estatal \n (Guarda votantes en otro Centro Electoral.):");
+      scanf("%s", code);
+      flag = false;
+      seachDeleteCenter(&r, code, flag);
+      break;
+
+    case 7:
+      printf(" Codigo Region Estatal para eliminar \n (Guarda votantes y Centros Electorales en otra Region Estatal.):");
+      scanf("%s", codeR);
+      flag = false;
+      seachChangeDeleteRegister(&r, codeR, flag);
+      break;
+
+    case 8: printf(" Codigo Region Estatal para modificar :");
+      scanf("%s", codeR);
+      seachChangeDeleteRegister(&r, codeR, flag);
+      break;
+
+    case 9: printf(" Codigo Centro Electoral para modificar :");
+      scanf("%s", code);
+      seachCenterModify(r, code);
+      break;
+
+    case 10: printf(" Cedula de la persona a modificar :");
+      scanf("%s", ID);
+      seachIDModify(r, ID);
+      break;
+
+    case 11: printf(" Reporte general \n");
+      printf(" Hay %i Estados en total \n", countStates(r));
+      break;
+
+    case 12: printf(" Reporte por Registro Estatal. \n");
+      printf(" Codigo Region Estatal para reporte: \n");
+      scanf("%s", codeR);
+      seachR(r, codeR);
+      break;
+
+    case 13: printf("\n Cedula a ubicar el centro electoral. :");
+      scanf("%s", ID);
+      seachID(r, ID);
+      break;
+
+    case 14: printf("\n Inserte nombre o apellido a buscar. :"); 
+      scanf("%s", name);
+      seachNameRegister(r, name);
+      break;
+
+    case 15:  printf("\n Inserte cedula de la persona a redirigir:");
+      scanf("%s", ID);
+      printf("\n Inserte codigo del Centro Electoral de redireccionamiento:");
+      scanf("%s", code);
+      seachSonFather(r, ID, code);
+      break;
+
+    case 16:
       break;
 
     }
@@ -234,142 +220,6 @@ void modifyCenter(Center **c)
       system("cls");
     }
   }
-}
-
-int countStatesCenterPerson(Center *c, bool flag)
-{
-  int sumPeople = 0, sumCenter = 0;
-  while (c)
-  {
-    if (!flag) printf("\n Centro Electoral: %s codigo %s", c->name, c->code);
-    int x = countPerson(c->left);
-    if (!flag) printf("\n Tiene %i votantes ", x);
-    sumPeople += x;
-    sumCenter++;
-    c = c->next;
-  }
-  if (flag) return sumPeople;
-  else return sumCenter;
-}
-
-void countCenterPerson(Center *c)
-{
-  printf("\n Centro Electoral: %s codigo %s", c->name, c->code);
-  int x = countPerson(c->left);
-  printf("\n Tiene %i votantes ", x);
 
 }
 
-int seachNameCenter(Center *c, char name[65])
-{
-  int re = 0;
-  while (c)
-  {
-    int x = seachName(c->left, name);
-    if (x != 0)
-    {
-      printf(" \n En :");
-      seeCenter(c);
-      printf(" Hay [%i] personas que coinciden con: %s", x, name);
-      re++;
-    }
-    c = c->next;
-  }
-  return re;
-}
-
-int changeSonFather(Center **c, char ID[10], char newFather[8]) //modificar
-{
-  Center *aux = (*c); bool flag = false; int x = 0;
-  while (aux)
-  {
-    People *t = aux->left, *ref = NULL;
-    char father[8];
-    strcpy(aux->code, father);
-    while (t)
-    {
-      if ((strcmp(ID, t->ID) == 0) || (strcmp(ID, t->next->ID) == 0))
-      {
-        if ((strcmp(ID, t->next->ID) == 0))
-        {
-          People *ref = t->next;
-          t->next = t->next->next;
-        }
-        else
-        {
-          aux->left = t->next;
-          People *ref = t;
-        }
-        Center *aux2 = (*c);
-        while (aux2)
-        {
-          if ((strcmp(newFather, aux2->code) == 0))
-          {
-            People *t = aux->left;
-            while (t->next)
-              t = t->next;
-            t->next = ref;
-            x = 1;
-            break;
-          }
-          aux = aux->next; //error en esta linea, o una cercana.
-        }
-        flag = true;
-        break;
-      }
-      t = t->next;
-    }
-    if (flag) break;
-    aux = aux->next;
-  }
-  return x;
-} //modificar
-
-Center *KeyToCenter( key *data ){
-  if(!data){
-    return NULL;
-  }
-  Center *center =  new Center;
-  int cont = 0;
-  while(cont < 3 && (data != NULL))
-  {
-    if (strcmp(data->clave,"nombre") == 0)
-    {
-      strcpy(center->name, data->valor);
-      cont++;
-    }
-    if (strcmp(data->clave,"direccion") == 0)
-    {
-      strcpy(center->address, data->valor);
-      cont++;
-    }
-    if (strcmp(data->clave,"codigo") == 0)
-    {
-      strcpy(center->code, data->valor);
-      cont++;
-    }
-
-    data = data->next;
-  }
-  if (cont == 3) return(center);
-  else return(NULL);
-}
-
-index *IndexCenter( key **data, Center *center ){
-  if(*data != NULL){
-    while(*data){
-      if (strcmp((*data)->clave, "references") == 0){
-        index *aux = (*data)->ind;
-        while(aux){
-          strcpy(aux->id, center->code);
-          strcpy(aux->belongs_to, "people");
-          aux = aux->next;
-        }
-        return((*data)->ind);
-      }
-      *data = (*data)->next;
-    }
-  } 
-  else 
-    return NULL;
-}
