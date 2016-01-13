@@ -111,19 +111,33 @@ People *findPeopleCenter( char *code ){
     return NULL;
 }
 Center *RecorverCenterDB(){
-  Center *aux = NULL,*ctr = new Center;
+  Center *aux = new Center, *rtn = NULL, *ctr = new Center;
   FILE *data_center = fopen("center.dat", "r");
   if(data_center != NULL){
+    bool flag = false;
     while(fread(ctr, sizeof(Center), 1, data_center) != NULL){
-      addCenter(&aux, ctr->name, ctr->address, ctr->code);
+      if (flag)
+      {
+        aux->next = new Center;
+        aux = aux->next;
+      }
+      strcpy(aux->code, ctr->code);
+      strcpy(aux->name, ctr->name);
+      strcpy(aux->address, ctr->address);
+      aux->next = NULL;
       aux->left = findPeopleCenter(aux->code);
+      if (rtn == NULL){
+        rtn = aux;
+        flag = true;
+      }
     }
+    aux->next = NULL;
     rewind(data_center);
     fclose(data_center);
   }
   else
     printf("La Base de datos de los electores no ha sido creada...\n");
-  return aux;
+  return rtn;
 }
 Center *findCenter( char *code ){
   Center *ctr = new Center;
@@ -216,7 +230,10 @@ Center *findCenterRegister( char *id ){
     while(fread(ind, sizeof(index), 1, index_register) != NULL){
       if( strcmp(ind->id, id) == 0 ){
         Center *tmp = findCenter( ind->has_one );
-        indexrCenter(&aux, &tmp);
+        if(tmp != NULL){
+          tmp->next = aux;
+          aux = tmp;          
+        }
       }
     }
     rewind(index_register);
@@ -227,19 +244,33 @@ Center *findCenterRegister( char *id ){
     return NULL;
 }
 Register *RecorverRegisterDB(){
-  Register *aux = NULL,*reg = new Register;
+  Register *aux = new Register,*rtn = NULL,*reg = new Register;
   FILE *data_register = fopen("register.dat", "r");
   if(data_register != NULL){
+    bool flag = false;
     while(fread(reg, sizeof(Register), 1, data_register) != NULL){
-      addRegister(&aux, reg->name, reg->address, reg->number, reg->code);
+      if (flag)
+      {
+        aux->next = new Register;
+        aux = aux->next;
+      }
+      strcpy(aux->code, reg->code);
+      strcpy(aux->name, reg->name);
+      strcpy(aux->address, reg->address);
+      strcpy(aux->number, reg->number);
+      aux->next = NULL;
       aux->down = findCenterRegister(aux->code);
+      if (rtn == NULL){
+        rtn = aux;
+        flag = true;
+      }
     }
     rewind(data_register);
     fclose(data_register);
   }
   else
     printf("La Base de datos de los electores no ha sido creada...\n");
-  return aux;
+  return rtn;
 }
 
 Register *findRegister( char *code ){
@@ -346,28 +377,94 @@ void seed( key **data, char root_file[], void (* function_struct)(key*) ) {
   rewind(fichero);
   fclose(fichero);
 }
-void savePeopleMemoryDB( People **data ){
+void savePeopleMemoryDB( People *data ){
   //Guarda todos los cambios realizados con people en BD
-  FILE *datapeople = fopen("people.dat", "w");
-  fclose(datapeople);
-  while((*data) != NULL)
+  while((data) != NULL)
   {
     FILE *data_people = fopen("people.dat", "a+b");
-    if((data_people != NULL) && (!peopleIsPresent( (*data)->ID ))){
-      fwrite(*data, sizeof(People), 1, data_people);
+    if((data_people != NULL) && (!peopleIsPresent( (data)->ID ))){
+      fwrite(data, sizeof(People), 1, data_people);
     }
     rewind(data_people);
     fclose(data_people);
-    *data = (*data)->next;
+    data = (data)->next;
   }
 }
-/*
-void saveCenterMemoryDB(){
-  
+void saveIndexCenterDB( char code[], People *data ){
+  while(data != NULL)
+  {
+    index *aux = new index;
+    strcpy(aux->id, code);
+    strcpy(aux->belongs_to, "people");
+    strcpy(aux->has_one, data->ID);
+    FILE *indexcenters = fopen("center.index", "a+b");
+    fwrite(aux, sizeof(index), 1, indexcenters);
+    rewind(indexcenters);
+    fclose(indexcenters);
+    data = data->next;
+  }
 }
-void saveRegisterMemoryDB(){
-
+void saveCenterMemoryDB( Center *data ){
+  //Guarda todos los cambios realizados con center's en DB
+  while((data) != NULL)
+  {
+    FILE *data_center = fopen("center.dat", "a+b");
+    if(data_center != NULL){
+      if (!centerIsPresent( (data)->code ))
+      {
+        fwrite(data, sizeof(Center), 1, data_center);
+        savePeopleMemoryDB((data)->left);
+        saveIndexCenterDB( (data)->code, (data)->left );
+      }
+    }
+    rewind(data_center);
+    fclose(data_center);
+    data = (data)->next;
+  }
 }
-void saveChange(){
 
-}*/
+void saveIndexRegisterDB( char code[], Center *data ){
+  while(data != NULL)
+  {
+    index *aux = new index;
+    strcpy(aux->id, code);
+    strcpy(aux->belongs_to, "center");
+    strcpy(aux->has_one, data->code);
+    FILE *indexregisters = fopen("register.index", "a+b");
+    fwrite(aux, sizeof(index), 1, indexregisters);
+    rewind(indexregisters);
+    fclose(indexregisters);
+    data = data->next;
+  }
+}
+void saveRegisterMemoryDB( Register *data ){
+  while((data) != NULL)
+  {
+    FILE *data_register = fopen("register.dat", "a+b");
+    if(data_register != NULL){
+      if (!registerIsPresent( (data)->code ))
+      {
+        fwrite(data, sizeof(Register), 1, data_register);
+        saveCenterMemoryDB((data)->down);
+        saveIndexRegisterDB( (data)->code, (data)->down );
+      }
+    }
+    rewind(data_register);
+    fclose(data_register);
+    data = (data)->next;
+  }
+}
+
+void saveChange( Register *data ){
+  FILE *datapeople = fopen("people.dat", "wb");
+  fclose(datapeople);
+  FILE *datacenters = fopen("center.dat", "wb");
+  FILE *indexcenters = fopen("center.index", "wb");
+  fclose(datacenters);
+  fclose(indexcenters);
+  FILE *dataregisters = fopen("register.dat", "wb");
+  FILE *indexregisters = fopen("register.index", "wb");
+  fclose(dataregisters);
+  fclose(indexregisters);
+  saveRegisterMemoryDB(data);
+}

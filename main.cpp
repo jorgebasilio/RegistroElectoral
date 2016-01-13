@@ -50,7 +50,24 @@ void loadFileRegister(){
   AddKey(&clave_register, "references");
   seed(&clave_register, "register.txt", registrs);
 }
-
+void viewPersons(People *data){
+  printf("\n%-10s \| %-25s \|\n", "id", "name");
+  while (data != NULL)
+  {
+    printf("%-10s \| %-25s \|\n", data->ID, data->name);
+    data = data->next;
+  }
+}
+void ViewCenter( Center *data ){
+  if(data != NULL){
+    printf("\n%-10s \| %-25s \|\n", "code", "name");
+    printf("%-10s \| %-25s \|\n", data->code, data->name);
+    viewPersons(data->left);
+    printf("%s\n", data->left->ID);
+    ViewCenterDB(data->next);
+    printf("%i\n", data->next);
+  }
+}
 void main(){
   loadFilePeople();
   printf("\n People is load\n");
@@ -64,7 +81,11 @@ void main(){
   People *p = RecorverPeopleDB();
   Center *c = RecorverCenterDB();
   Register *r = RecorverRegisterDB();
+
   system("PAUSE");
+
+  //saveChange(r); --------------------Funcion para salvar los datos
+
 
   int op = -1; 
   char ID[10] = "", name[65] = "", address[100] = "", date[9] = "", codeC[4] = "", codeR[4] = "", number[12] = "", code[8] = "";
@@ -80,7 +101,7 @@ void main(){
     printf("\n 7. Elimina Registro Estatal (Cambia votantes y Centros Electorales)."); //Por probar
     printf("\n 8. Modificar Registro Estatal."); //Por probar
     printf("\n 9. Modificar Centro Electoral. "); //Por probar
-    printf("\n 10. Modificar Persona."); //por probar 
+    printf("\n 10. Modificar Persona."); //por probar
     printf("\n 11. Reporte General."); //funciona
     printf("\n 12. Reporte por Registro Estata."); //funciona
     printf("\n 13. Buscar persona por cedula. "); //funciona

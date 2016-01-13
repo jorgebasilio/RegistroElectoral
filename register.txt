@@ -1,1 +1,2 @@
 "nombre": "Registro de caracas",  "direccion": "Caracas", "codigo": "001", "telefono": "02122555555", "references": "[001001,001002,]";
+"nombre": "Registro de miranda",  "direccion": "petare", "codigo": "002", "telefono": "02122777777", "references": "[002001,]";
