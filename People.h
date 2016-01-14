@@ -149,20 +149,23 @@ int countPerson(People *p)
 
 int seachName(People *p, char name[65])
 {
-  int x = 0;
-  while (p)
-  {
-    char * pch, comparation[65];
-    pch = strpbrk(name, p->name);
-    strcpy(comparation, pch);
-    if ((strcmp(name, comparation) == 0))
-    {
-      printPerson(p);
-      x ++;
-    }
-    p = p->next;
-  }
-  return x;
+	char * pch, comparation[65];
+	int x = 0;
+	while (p)
+	{
+		pch = strpbrk(name, p->name);
+		if (pch != NULL)
+		{
+			strcpy(comparation, pch);
+			if ((strcmp(name, comparation) == 0))
+			{
+				printPerson(p);
+				x++;
+			}
+		}
+		p = p->next;
+	}
+	return x;
 }
 
 /* void returnDDMMAA(char DD[3], char MM[3], char AA[5], char carry[10])
