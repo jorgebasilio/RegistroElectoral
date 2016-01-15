@@ -416,6 +416,21 @@ void seachSonFather(Register **r, char ID[10], char newFather[8])
 	
 }
 
+void seachRegisterModify(Register **r, char codeC[8])
+{
+
+	Register *aux = (*r);
+	while (aux)
+	{
+		if ((strcmp(codeC, aux->code) == 0))
+		{
+			modifyRegister(&aux);
+			break;
+		}
+		aux = aux->next;
+	}
+}
+
 Register *KeyToRegister( key *data ){
   if(!data){
     return NULL;
