@@ -431,6 +431,26 @@ void seachRegisterModify(Register **r, char codeC[8])
 	}
 }
 
+void seachReCe(Register *r, char code[8])
+{
+	while (r)
+	{
+		Center *aux = r->down;
+		while (aux)
+		{
+			if ((strcmp(code, aux->code) == 0))
+			{
+				printf("\n\n\n ");
+				seeCenter(aux);
+				seePeople(aux->left);
+				break;
+			}
+			aux = aux->next;
+		}
+		r = r->next;
+	}
+} // reporte centro electoral
+
 Register *KeyToRegister( key *data ){
   if(!data){
     return NULL;
