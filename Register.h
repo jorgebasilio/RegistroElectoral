@@ -392,16 +392,30 @@ void seachCenterModify(Register *r, char codeC[8])
 	}
 }
 
-void seachSonFather(Register *r, char ID[10], char newFather[8])
+void seachSonFather(Register **r, char ID[10], char newFather[8])
 {
-	Center *aux = r->down;
-	while (r)
+	Register *aux = (*r); bool flag = false; People *ref = NULL;
+	while (aux)
 	{
-		if (changeSonFather(&aux, ID, newFather) == 1)
+		ref = seachSonCenter(&(aux->down), ID);
+		if (ref != NULL)
+		{
+			flag = true;
 			break;
+		}
 		aux = aux->next;
 	}
+
+	Register *auxo = (*r);
+	while (auxo && flag)
+	{
+		if (movePerson(&(auxo->down), ref, newFather) == 1)
+			break;
+		auxo = auxo->next;
+	}
+	
 }
+
 Register *KeyToRegister( key *data ){
   if(!data){
     return NULL;
