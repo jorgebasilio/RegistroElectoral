@@ -468,3 +468,133 @@ void saveChange( Register *data ){
   fclose(indexregisters);
   saveRegisterMemoryDB(data);
 }
+
+char *getCodeRegister( char code[] ){
+  char *registerCode = new char;
+  for (int i = 0; i < 3; ++i){
+    registerCode[i] = code[i];
+  }
+  registerCode[3] = '\0';
+  return registerCode;
+}
+char *getCodeCenter( char code[] ){
+  char *centerCode = new char;
+  for (int i = 0; i < 3; ++i)
+    centerCode[i] = code[3+i];
+  centerCode[3] = '\0';
+  return centerCode;
+}
+void DeleteCenter( Register *data, char R_delete[], char R_to[]){
+  People *aux;
+  Register *registerAux = data;
+  Center *centerAux;
+  Center *centers;
+  bool flag = false;
+  char *codeRegister = getCodeRegister(R_delete);
+  while( data != NULL){
+    if (strcmp(data->code, codeRegister) == 0)
+    {
+      centers = data->down;
+      while( centers->next != NULL ){
+        if(strcmp(centers->next->code, R_delete) == 0){
+          centerAux = centers->next;
+          if (centerAux->next != NULL)
+            centers->next = centerAux->next;
+          else
+            centers->next = NULL;
+          aux = centerAux->left;
+          delete(centerAux);
+          flag = true;
+          break;
+        }
+        centers = centers->next;
+      }
+      if(strcmp(data->down->code, R_delete) == 0){
+        centerAux = data->down;
+        if (data->down->next != NULL)
+          data->down = data->down->next;
+        else
+          data->down = NULL;
+        aux = centerAux->left;
+        delete(centerAux);
+        flag = true;
+      }
+    }
+    data = data->next;
+  }
+  if (flag){
+    codeRegister = getCodeRegister(R_to);
+    while(registerAux != NULL){
+      if (strcmp(registerAux->code, codeRegister) == 0){
+        centers = registerAux->down;
+        while( centers != NULL ){
+          if(strcmp(centers->code, R_to) == 0){
+            People *cn = centers->left;
+            while(true){
+              if(cn->next == NULL){
+                cn->next = aux;
+                break;
+              }
+              cn = cn->next;
+            }
+            break;
+          }
+          centers = centers->next;
+        }
+        break;
+      }
+      registerAux = registerAux->next;
+    }
+  }
+  else
+    printf("No se Encontro el centro electoral a eliminar\n");
+}
+
+void DeleteRegister(Center *c, Register **data, char code[]){
+  char codeto[9];
+  Register *auxR = (*data);
+  while((*data) != NULL){
+    if(strcmp((*data)->code, code) == 0){
+      Center *aux = (*data)->down;
+      while(aux != NULL){
+        printf("Se moveran las personas del centro %s \n", aux->code);
+        printf(" Indique el codigo de Centro electoral destino de los electores");
+        do{
+          scanf("%s", codeto);
+          if (!centerExists(c, codeto))
+            printf("   El centro electoral destino no existe!\n");
+        }while(!centerExists(c, codeto));
+        DeleteCenter( auxR, aux->code, codeto );
+        printf("Eliminado\n");
+        aux = (*data)->down;
+      }
+    }
+    (*data) = (*data)->next;
+  }
+  (*data) = auxR;
+  Register *delet;
+  while(auxR->next != NULL){
+    if (strcmp(auxR->next->code, code) == 0)
+    {
+      delet = auxR->next;
+      if (delet->next != NULL)
+        auxR->next = delet->next;
+      else
+        auxR->next = NULL;
+      delete(delet);
+      break;
+    }
+    auxR = auxR->next;
+  }
+  if (strcmp((*data)->code, code) == 0)
+  {
+    delet = (*data);
+    printf("%s\n", delet->code);
+    printf("%s\n", (*data)->code);
+    if ((*data)->next != NULL)
+      (*data) = (*data)->next;
+    else
+      (*data) = NULL;
+    delete(delet);
+  }
+}

@@ -1,58 +1,58 @@
 struct People {
   char address[100];
-	char name[70];
-	char date[9]; 
-  char ID[10];
-	People *next;
+  char name[70];
+  char date[11]; 
+  char ID[11];
+  People *next;
 };
 
 bool vacio(People *p)
 {
-	return (!(p));
+  return (!(p));
 }
 
 void addPerson(People **p, char ID[10], char name[65], char address[100], char date[9])
 {
-	bool flag = false;
-	if (vacio(*p))
-	{
-		People *aux = new People;
-		strcpy(aux->ID, ID);
-		strcpy(aux->name, name);
-		strcpy(aux->address, address);
-		strcpy(aux->date, date);
-		aux->next = (*p);
-		(*p) = aux;
-		flag = true;
-	}
-	else
-	{
-		People *t = (*p);
-		while (t)
-		{
-			if ((strcmp(ID, t->ID) == 0))
-			{
-				flag = true;
-				break;
-			}
-			t = t->next;
-		}
+  bool flag = false;
+  if (vacio(*p))
+  {
+    People *aux = new People;
+    strcpy(aux->ID, ID);
+    strcpy(aux->name, name);
+    strcpy(aux->address, address);
+    strcpy(aux->date, date);
+    aux->next = (*p);
+    (*p) = aux;
+    flag = true;
+  }
+  else
+  {
+    People *t = (*p);
+    while (t)
+    {
+      if ((strcmp(ID, t->ID) == 0))
+      {
+        flag = true;
+        break;
+      }
+      t = t->next;
+    }
 
-		if (!flag)
-		{
-			People *aux = new People;
-			strcpy(aux->ID, ID);
-			strcpy(aux->name, name);
-			strcpy(aux->address, address);
-			strcpy(aux->date, date);
-			aux->next = NULL;
-			t = (*p);
-			while (t->next)
-				t = t->next;
-			t->next = aux;
-		}
-		else printf("Persona ya registrada!!");
-	}
+    if (!flag)
+    {
+      People *aux = new People;
+      strcpy(aux->ID, ID);
+      strcpy(aux->name, name);
+      strcpy(aux->address, address);
+      strcpy(aux->date, date);
+      aux->next = NULL;
+      t = (*p);
+      while (t->next)
+        t = t->next;
+      t->next = aux;
+    }
+    else printf("Persona ya registrada!!");
+  }
 }
 
 void printPerson(People *p)
@@ -149,23 +149,23 @@ int countPerson(People *p)
 
 int seachName(People *p, char name[65])
 {
-	char * pch, comparation[65];
-	int x = 0;
-	while (p)
-	{
-		pch = strpbrk(name, p->name);
-		if (pch != NULL)
-		{
-			strcpy(comparation, pch);
-			if ((strcmp(name, comparation) == 0))
-			{
-				printPerson(p);
-				x++;
-			}
-		}
-		p = p->next;
-	}
-	return x;
+  char * pch, comparation[65];
+  int x = 0;
+  while (p)
+  {
+    pch = strpbrk(name, p->name);
+    if (pch != NULL)
+    {
+      strcpy(comparation, pch);
+      if ((strcmp(name, comparation) == 0))
+      {
+        printPerson(p);
+        x++;
+      }
+    }
+    p = p->next;
+  }
+  return x;
 }
 
 /* void returnDDMMAA(char DD[3], char MM[3], char AA[5], char carry[10])
@@ -227,9 +227,9 @@ People *KeyToPeople( key *data ){
     data = data->next;
   }
   if(cont == 4) 
-	  return person;
+    return person;
   else
-	  return NULL;
+    return NULL;
 }
 
 People *RecorverPeopleDB(){
@@ -248,4 +248,90 @@ People *RecorverPeopleDB(){
     system("PAUSE");
   }
   return aux;
+}
+
+int calculateAge( char *date, char *timeS ){
+  char sysyear[5];
+  char sysmonth[3];
+  char sysday[3];
+  char peoyear[5];
+  char peomonth[3];
+  char peoday[3];
+  int sys_year = 0;
+  int sys_month = 0;
+  int sys_day = 0;
+  int peo_year = 0;
+  int peo_month = 0;
+  int peo_day = 0;
+  int age = 0;
+  int e = 0;
+  if ( strlen(date) == strlen(timeS) )
+  {
+    for (int i = 0; i < 4; ++i)
+    {
+      if ( i == 0 || i == 1 || i == 2 || i == 3 )
+      {
+        sysyear[e] = timeS[6+i];
+        peoyear[e] = date[6+i];  
+      }
+      if ( i == 0 || i == 1 )
+      {
+        sysmonth[e] = timeS[3+i];
+        peomonth[e] = date[3+i];
+      }
+      if ( i == 0 || i == 1 )
+      {
+        sysday[e] = timeS[i];
+        peoday[e] = date[i];
+      }
+      e++;
+      if( e == 4 ){
+        sysyear[e] = '\0';
+        peoyear[e] = '\0';
+        sysmonth[2] = '\0';
+        peomonth[2] = '\0';
+        sysday[2] = '\0';
+        peoday[2] = '\0';
+      }
+    }
+    sys_year = atoi(sysyear);
+    sys_month = atoi(sysmonth);
+    sys_day = atoi(sysday);
+    peo_year = atoi(peoyear);
+    peo_month = atoi(peomonth);
+    peo_day = atoi(peoday);
+    age = sys_year - peo_year;
+    if (sys_month >= peo_month)
+      if (sys_day >= peo_day)
+        return age;
+    return(age - 1);
+  }
+}
+void peopleRangAge( People *people, int min, int max ){
+  time_t t = time(0);
+  struct tm *tlocal = localtime(&t);
+  char timeSystem[64];
+  strftime(timeSystem,64,"%d/%m/20%y",tlocal);
+  int e = (-1);
+  bool flag = false;
+  while(people != NULL){
+    int age_people = calculateAge( people->date, timeSystem );
+    if ( e == (-1))
+    {
+      printf("\n%-10s \| %-25s \| %-25s\n", "Cedula", "Nombre", "Edad");
+      e = 0;
+    }
+    if ( age_people >= min && age_people <= max)
+    {
+
+      printf("%-10s \| %-25s \| %-25i\n", people->ID, people->name, age_people);
+      e++;
+      flag = true;
+    }
+    people = people->next;
+  }
+  if(!flag)
+    printf("No hay personas que coincidan en el rango de edad\n");
+  else
+    printf("Coinciden \" %i \" Personas en el rango de edad\n", e);
 }
