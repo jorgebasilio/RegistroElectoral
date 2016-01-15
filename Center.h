@@ -280,42 +280,32 @@ int seachNameCenter(Center *c, char name[65])
 	return re;
 }
 
-int changeSonFather(Center **c, char ID[10], char newFather[8]) //modificar
+People *seachSonCenter(Center **c, char ID[10])
 {
-	Center *aux = (*c); bool flag = false; int x = 0;
+	Center *aux = (*c);
+	People *ref = NULL;
 	while (aux)
 	{
-		People *t = aux->left, *ref = NULL;
-		char father[8];
-		strcpy(aux->code, father);
+		People *t = aux->left;
+		bool flag = false;
 		while (t)
 		{
-			if (t->next)
+			if ((strcmp(ID, t->ID) == 0)) // caso cabeza
 			{
-				if (strcmp(ID, t->next->ID) == 0)
-				{
-					People *ref = t->next;
-					t->next = t->next->next;
-				}
-				else if (strcmp(ID, t->ID) == 0) // Caso cabeza
-				{
-					aux->left = t->next;
-					People *ref = t;
-				}
-				Center *auxo = (*c);
-				while (auxo)
-				{
-					if (strcmp(newFather, auxo->code) == 0)
-					{
-						People *t = auxo->left;
-						while (t->next)
-							t = t->next;
-						t->next = ref;
-						x = 1;
-						break;
-					}
-					auxo = auxo->next; //error en esta linea, o una cercana.
-				}
+				aux->left = t->next;
+				ref = t;
+				if (ref->next != NULL)
+					ref->next = NULL;
+				flag = true;
+				break;
+			}
+			else if ((strcmp(ID, t->next->ID) == 0))
+			{
+				ref = t->next;
+				t->next = t->next->next;
+				if (ref->next != NULL)
+			
+					ref->next = NULL;
 				flag = true;
 				break;
 			}
@@ -324,8 +314,26 @@ int changeSonFather(Center **c, char ID[10], char newFather[8]) //modificar
 		if (flag) break;
 		aux = aux->next;
 	}
-	return x;
-} //modificar
+	return ref;
+}
+
+int movePerson(Center **c, People *ref, char newFather[8])
+{
+	Center *aux = (*c); int flag = 0;
+	while (aux)
+	{
+		if ((strcmp(newFather, aux->code) == 0))
+		{
+			ref->next = aux->left;
+			aux->left = ref;
+			flag = 1;
+			break;
+		}
+		aux = aux->next;
+	}
+	return flag;
+}
+
 Center *KeyToCenter( key *data ){
   if(!data){
     return NULL;
