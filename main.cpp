@@ -167,10 +167,10 @@ void main(){
       seachChangeDeleteRegister(&r, codeR, flag);
       break;
 
-    case 8: printf(" Codigo Region Estatal para modificar :");
-      scanf("%s", codeR);
-      seachChangeDeleteRegister(&r, codeR, flag);
-      break;
+  case 8: printf(" Codigo Region Estatal para modificar :");
+	scanf(" %s", codeR);
+	seachRegisterModify(&r, codeR);
+	break;
 
     case 9: printf(" Codigo Centro Electoral para modificar :");
       scanf("%s", code);
